@@ -109,7 +109,7 @@ function countTotalSum (sortedPrices, discount) {
 		}
 	}, 0);
 
-	return parseFloat(totalSum.toFixed(2));
+	return totalSum.toFixed(2);
 }
 
 /**
