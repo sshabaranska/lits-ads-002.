@@ -64,7 +64,23 @@ function isfileExist(file) {
  * @ param {Array} prices
  * @ return {Array}
  */
-function sortPrices(prices) {
+ function sortPrices(prices) {
+ 	var sortedPrices = prices.slice();
+ 	var minIndex;
+
+ 	for (var i = 1; i <= sortedPrices.length; i++) {
+	    minIndex = i;
+	    while (minIndex > 0 && compare(sortedPrices[minIndex], sortedPrices[minIndex - 1])) {
+	      	var tmp = sortedPrices[minIndex];
+			sortedPrices[minIndex] = sortedPrices[minIndex - 1];
+			sortedPrices[minIndex - 1] = tmp;
+
+	      	minIndex -= 1;
+	    }
+  	}
+ 	return sortedPrices;
+}
+/*function sortPrices(prices) {
 	var isSorted = false;
 	while(!isSorted) {
 		isSorted = true;
@@ -78,7 +94,7 @@ function sortPrices(prices) {
 		};
 	}
 	return prices;
-}
+}*/
 
 /**
  * compare numbers
