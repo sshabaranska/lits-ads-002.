@@ -31,20 +31,23 @@ var path = require('path');
 			discount = (100 - parseFloat(tmpContent[tmpContent.length - 1]))/100;
 		} else {
 			console.log('*.in file is empty');
+			writeResult(outFile, totalSum);
 			return;
 		}
 	} else {
 		console.log('*.in file is not found');
+		writeResult(outFile, totalSum);
 		return;
 	}
-
-	prices = prices.filter(function(price) {
+	//console.log('prices = ' + prices);
+	/*prices = prices.filter(function(price) {
 		return price && parseFloat(price) > 0 ;
-	});
-
+	});*/
+	//console.log('filtered prices = ' + prices);
 	sortedPrices = prices.length < 3 ? prices : sortPrices(prices);
+	//console.log('sorted prices = ' + sortedPrices);
 	totalSum = countTotalSum(sortedPrices, discount);
-	writeResult(outFile, totalSum);	
+	writeResult(outFile, totalSum);
 })();
 
 /**
