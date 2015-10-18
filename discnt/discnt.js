@@ -39,7 +39,7 @@ var path = require('path');
 	}
 
 	prices = prices.filter(function(price) {
-		return price && price > 0 ;
+		return price && parseFloat(price) > 0 ;
 	});
 
 	sortedPrices = prices.length < 3 ? prices : sortPrices(prices);
