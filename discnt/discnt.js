@@ -26,9 +26,9 @@ var path = require('path');
 	if (isfileExist(inFile)) {
 		var content = fs.readFileSync(path.join(__dirname, inFile),'utf8');
 		if(content){
-			var tmpContent = content.split(/\n/);
-			prices = tmpContent[0].split(' ');
-			discount = (100 - parseInt(tmpContent[tmpContent.length - 1]))/100;
+			var tmpContent = content.trim().split(/\n/);
+			prices = tmpContent[0].trim().split(' ');
+			discount = (100 - parseFloat(tmpContent[tmpContent.length - 1]))/100;
 		} else {
 			console.log('*.in file is empty');
 			return;
@@ -38,7 +38,11 @@ var path = require('path');
 		return;
 	}
 
-	sortedPrices = sortPrices(prices);
+	prices = prices.filter(function(price) {
+		return price && price > 0 ;
+	});
+
+	sortedPrices = prices.length < 3 ? prices : sortPrices(prices);
 	totalSum = countTotalSum(sortedPrices, discount);
 	writeResult(outFile, totalSum);	
 })();
@@ -61,18 +65,14 @@ function sortPrices(prices) {
 	var isSorted = false;
 	while(!isSorted) {
 		isSorted = true;
-		if(prices.length > 2) {
-			for (var i = 1; i < prices.length; i++) {
-				if(compare(prices[i], prices[i-1])) {
-					var tmp = prices[i];
-					prices[i] = prices[i-1];
-					prices[i-1] = tmp;
-					isSorted = false;
-				}
-			};
-		} else {
-			return prices;
-		}
+		for (var i = 1; i < prices.length; i++) {
+			if(compare(prices[i], prices[i-1])) {
+				var tmp = prices[i];
+				prices[i] = prices[i-1];
+				prices[i-1] = tmp;
+				isSorted = false;
+			}
+		};
 	}
 	return prices;
 }
