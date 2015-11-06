@@ -78,11 +78,13 @@ function countHamsters(hamsters, packages, allHamstersQty) {
     var myHamsters;
 
     if (allHamstersQty > 1) {
-        sortHamsters(hamsters, 'single');
+        var sorted = sortHamsters(hamsters, 'single');
+        console.log('sorted');
+    console.log(sortedHamsters);
     }
 
-    if (parseInt(hamsters[0].single) <= parseInt(packages)) {
-        myHamsters = countHamstersWithNeighbours(hamsters, packages, 1);
+    if (parseInt(sorted[0].single) <= parseInt(packages)) {
+        myHamsters = countHamstersWithNeighbours(sorted, packages, 1);
     } else {
         return 0;
     }
@@ -122,20 +124,89 @@ function countPackages(hamsters, qty) {
         hamsters[i][qty] = parseInt(hamsters[i].single)
                             + (parseInt(hamsters[i].withNeighbour) * parseInt(qty));
     }
-    sortHamsters(hamsters, qty);
+    var sortedHamsters = sortHamsters(hamsters, qty);
+    console.log('sorted');
+    console.log(sortedHamsters);
     var currentPackages = 0;
 
     for(var j = 0; j <= qty; j++) {
-        currentPackages += parseInt(hamsters[j][qty]);
+        currentPackages += parseInt(sortedHamsters[j][qty]);
     }
     return currentPackages;
+}
+
+// Merge sort
+function sortHamsters(hamsters, sortBy) {
+    var len = hamsters.length - 1;
+    var sortedHamsters = sortHamstersRecursively(hamsters, 0, len, sortBy);
+
+    return sortedHamsters;
+}
+
+function sortHamstersRecursively(hamsters, left, right, sortBy) {
+    if(left < right) {
+        var middle = Math.floor((left + right) / 2);
+
+        var leftPart = sortHamstersRecursively(hamsters, left, middle, sortBy);
+        var rightPart = sortHamstersRecursively(hamsters, middle + 1, right, sortBy);
+
+        sortedHamsters = merge(leftPart, rightPart, sortBy);
+        return sortedHamsters;
+
+
+    } else {
+        return hamsters[left];
+    }
+}
+
+function merge(leftPart, rightPart, sortBy) {
+    var leftPart = !leftPart.length ? new Array(leftPart) : leftPart;
+    var rightPart = !rightPart.length ? new Array(rightPart) : rightPart;
+
+    var result = new Array(leftPart.length + rightPart.length);
+
+    var leftPosition = 0;
+    var rightPosition = 0;
+    var resultPosition = 0;
+
+    while(resultPosition < result.length) {
+
+        if(((leftPosition >= leftPart.length)
+            || (rightPosition < rightPart.length))
+            && compare(rightPart[rightPosition], leftPart[leftPosition], sortBy)) {
+
+            result[resultPosition] = rightPart[rightPosition];
+            rightPosition = rightPosition + 1;
+        } else {
+            result[resultPosition] = leftPart[leftPosition];
+            leftPosition = leftPosition + 1;
+        }
+        resultPosition = resultPosition + 1;
+    }
+    return result;
+}
+
+/**
+ * compare numbers
+ * @ param {Number} num1
+ * @ param {Number} num2
+ * @ return {Boolean}
+ */
+function compare (num1, num2, sortBy) {
+    if(!num1) return false;
+    if(!num2) return true;
+    if(parseFloat(num1[sortBy]) < parseFloat(num2[sortBy])) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /**
  * function shuffles array of hamsters
  * @ param {Array} hamsters
  * @ return {Array}
- */
+ 
 function shuffle(hamsters) {
 
     for (var i = hamsters.length - 1; i > 0; i--) {
@@ -144,13 +215,14 @@ function shuffle(hamsters) {
         hamsters[i] = hamsters[j];
         hamsters[j] = temp;
     }
-}
+}*/
 
 /**
  * function sorts array of hamsters
  * @ param {Array} hamsters
  * @ return {Array}
- */
+ 
+
 function sortHamsters(hamsters, sortBy) {
     shuffle(hamsters);
     quickSortRecursive(hamsters, 0, hamsters.length - 1, sortBy);
@@ -204,7 +276,7 @@ function swap(hamsters, firstIndex, secondIndex){
     hamsters[secondIndex] = temp;
 
     return hamsters;
-}
+}*/
 
 /**
  * count total summ
