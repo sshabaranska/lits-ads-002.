@@ -41,7 +41,6 @@ var allHamstersArr = [];
         return;
     }
     result = countHamsters(packages);
-    console.log('result = ' + result);
     writeResult(outFile, result);
 })();
 
@@ -72,6 +71,7 @@ function convertDocToArr(tmpContent, allHamstersQty) {
         };
         arr[i-2] = tmpObj;
     };
+    console.log(arr);
     return arr;
 }
 
@@ -102,8 +102,6 @@ function countPackages(qtyOfNeighbours) {
                                             + (parseInt(allHamstersArr[i].withNeighbour) * parseInt(qty));
     }
     sortHamsters(qty);
-    console.log('sortHamsters =');
-    console.log(allHamstersArr);
     var currentPackages = 0;
 
     for(var j = 0; j <= qty; j++) {
@@ -112,7 +110,7 @@ function countPackages(qtyOfNeighbours) {
     return currentPackages;
 }
 
-/**
+/*
  * @ param {Number} packages
  * @ param {Number} qtyOfNeighbours
  * @ return {Number}
