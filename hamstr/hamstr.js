@@ -41,7 +41,7 @@ var allHamstersArr = [];
         writeResult(outFile, totalSum);
         return;
     }
-    result = countHamsters(packages);
+    result = countHamsters(packages, allHamstersQty);
     writeResult(outFile, result);
 })();
 
@@ -76,15 +76,16 @@ function convertDocToArr(tmpContent, allHamstersQty) {
     return arr;
 }
 
-function countHamsters(packages) {
+function countHamsters(packages, allHamstersQty) {
     var myHamsters;
+    if (allHamstersQty > 0) {
+        sortHamsters('single');
+    }
 
-    sortHamsters('single');
-
-    if (allHamstersArr[0].single < packages) {
+    if (parseInt(allHamstersArr[0].single) <= parseInt(packages)) {
         myHamsters = countHamstersWithNeighbours(packages, 1);
-    } else if(allHamstersArr[0].single == packages) {
-        return 1;
+    //} else if(allHamstersArr[0].single == packages) {
+        //return 1;
     } else {
         return 0;
     }
@@ -120,7 +121,7 @@ function countHamstersWithNeighbours(packages, qtyOfNeighbours) {
     var qty = parseInt(qtyOfNeighbours);
     var currentPackages = countPackages(qty);
 
-    while (currentPackages < packages && qty < allHamstersArr.length-1) {
+    while (currentPackages <= packages && qty < allHamstersArr.length-1) {
         currentPackages = countPackages(parseInt(qty) + 1);
         qty++;
     }
