@@ -28,6 +28,7 @@ var allHamstersArr = [];
         if(content){
             var tmpContent = content.trim().split(/\n/);
             packages = tmpContent[0].trim();
+            console.log('packages = ' + packages);
             allHamstersQty = tmpContent[1].trim();
             allHamstersArr = convertDocToArr(tmpContent, allHamstersQty);
         } else {
