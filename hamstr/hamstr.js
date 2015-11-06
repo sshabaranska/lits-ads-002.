@@ -78,13 +78,11 @@ function countHamsters(hamsters, packages, allHamstersQty) {
     var myHamsters;
 
     if (allHamstersQty > 1) {
-        var sorted = sortHamsters(hamsters, 'single');
-        console.log('sorted');
-    console.log(sortedHamsters);
+        var hamsters = sortHamsters(hamsters, 'single');
     }
 
-    if (parseInt(sorted[0].single) <= parseInt(packages)) {
-        myHamsters = countHamstersWithNeighbours(sorted, packages, 1);
+    if (parseInt(hamsters[0].single) <= parseInt(packages)) {
+        myHamsters = countHamstersWithNeighbours(hamsters, packages, 1);
     } else {
         return 0;
     }
