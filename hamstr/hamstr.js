@@ -215,7 +215,7 @@ function writeResult (outFile, totalSum) {
             }
         });
     } else {
-        fs.writeFile('discnt.out', totalSum, 'utf8', function(err) {
+        fs.writeFile('hamstr.out', totalSum, 'utf8', function(err) {
             if (err) {
                 console.log(err);
             }
