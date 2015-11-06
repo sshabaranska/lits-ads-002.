@@ -41,7 +41,7 @@ var allHamstersArr = [];
         return;
     }
     result = countHamsters(packages);
-    console.log('result = ' +result);
+    console.log('result = ' + result);
     writeResult(outFile, result);
 })();
 
@@ -206,6 +206,8 @@ function swap(firstIndex, secondIndex){
  * @ param {Number} totalSum
  */
 function writeResult (outFile, totalSum) {
+    var result = parseInt(totalSum);
+    console.log('result = ' + result);
     if(isfileExist(outFile)) {
         fs.writeFile(path.join(__dirname, outFile), totalSum, 'utf8', function(err) {
             if(err) {
