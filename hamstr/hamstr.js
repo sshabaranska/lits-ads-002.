@@ -1,14 +1,12 @@
 var fs = require('fs');
 var path = require('path');
 
-var allHamstersArr = [];
-
 (function () {
     var files = fs.readdirSync(__dirname);
 
     var inFile = null;
     var outFile = null;
-
+    var allHamstersArr = [];
     var allHamstersQty;
 
     var result;
@@ -41,7 +39,7 @@ var allHamstersArr = [];
         writeResult(outFile, totalSum);
         return;
     }
-    result = countHamsters(packages, allHamstersQty);
+    result = countHamsters(allHamstersArr, packages, allHamstersQty);
     writeResult(outFile, result);
 })();
 
@@ -76,40 +74,19 @@ function convertDocToArr(tmpContent, allHamstersQty) {
     return arr;
 }
 
-function countHamsters(packages, allHamstersQty) {
+function countHamsters(hamsters, packages, allHamstersQty) {
     var myHamsters;
-    if (allHamstersQty > 0) {
-        sortHamsters('single');
+
+    if (allHamstersQty > 1) {
+        sortHamsters(hamsters, 'single');
     }
 
-    if (parseInt(allHamstersArr[0].single) <= parseInt(packages)) {
-        myHamsters = countHamstersWithNeighbours(packages, 1);
-    //} else if(allHamstersArr[0].single == packages) {
-        //return 1;
+    if (parseInt(hamsters[0].single) <= parseInt(packages)) {
+        myHamsters = countHamstersWithNeighbours(hamsters, packages, 1);
     } else {
         return 0;
     }
     return myHamsters;
-}
-
-/**
- * @ param {Number} qtyOfNeighbours
- * @ return {Number}
- */
-function countPackages(qtyOfNeighbours) {
-    var qty = qtyOfNeighbours;
-
-    for (var i = 0; i < allHamstersArr.length; i++) {
-        allHamstersArr[i][qty] = parseInt(allHamstersArr[i].single)
-                                            + (parseInt(allHamstersArr[i].withNeighbour) * parseInt(qty));
-    }
-    sortHamsters(qty);
-    var currentPackages = 0;
-
-    for(var j = 0; j <= qty; j++) {
-        currentPackages += parseInt(allHamstersArr[j][qty]);
-    }
-    return currentPackages;
 }
 
 /*
@@ -117,19 +94,19 @@ function countPackages(qtyOfNeighbours) {
  * @ param {Number} qtyOfNeighbours
  * @ return {Number}
  */
-function countHamstersWithNeighbours(packages, qtyOfNeighbours) {
-    var qty = parseInt(qtyOfNeighbours);
-    var currentPackages = countPackages(qty);
+function countHamstersWithNeighbours(hamsters, packages, qty) {
+    var qty = parseInt(qty);
+    var currentPackages = countPackages(hamsters, qty);
 
-    while (currentPackages <= packages && qty < allHamstersArr.length-1) {
-        currentPackages = countPackages(parseInt(qty) + 1);
+    while (currentPackages <= packages && qty < hamsters.length-1) {
+        currentPackages = countPackages(hamsters, qty + 1);
         qty++;
     }
-    if (currentPackages > packages && qty <= allHamstersArr.length - 1) {
+    if (currentPackages > packages && qty <= hamsters.length - 1) {
         return parseInt(qty);
-    } else if (currentPackages < packages && qty == allHamstersArr.length - 1) {
+    } else if (currentPackages <= packages && qty == hamsters.length - 1) {
         return parseInt(qty) + 1;
-    }else if (currentPackages == packages || qty == allHamstersArr.length - 1) {
+    }else if (currentPackages == packages || qty == hamsters.length - 1) {
         return parseInt(qty) + 1;
     } else {
         return qty;
@@ -137,17 +114,35 @@ function countHamstersWithNeighbours(packages, qtyOfNeighbours) {
 }
 
 /**
+ * @ param {Number} qtyOfNeighbours
+ * @ return {Number}
+ */
+function countPackages(hamsters, qty) {
+    for (var i = 0; i < hamsters.length; i++) {
+        hamsters[i][qty] = parseInt(hamsters[i].single)
+                            + (parseInt(hamsters[i].withNeighbour) * parseInt(qty));
+    }
+    sortHamsters(hamsters, qty);
+    var currentPackages = 0;
+
+    for(var j = 0; j <= qty; j++) {
+        currentPackages += parseInt(hamsters[j][qty]);
+    }
+    return currentPackages;
+}
+
+/**
  * function shuffles array of hamsters
  * @ param {Array} hamsters
  * @ return {Array}
  */
-function shuffle() {
+function shuffle(hamsters) {
 
-    for (var i = allHamstersArr.length - 1; i > 0; i--) {
+    for (var i = hamsters.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
-        var temp = allHamstersArr[i];
-        allHamstersArr[i] = allHamstersArr[j];
-        allHamstersArr[j] = temp;
+        var temp = hamsters[i];
+        hamsters[i] = hamsters[j];
+        hamsters[j] = temp;
     }
 }
 
@@ -156,48 +151,59 @@ function shuffle() {
  * @ param {Array} hamsters
  * @ return {Array}
  */
-function sortHamsters(sortBy) {
-    shuffle();
-    quickSortRecursive(0, allHamstersArr.length - 1, sortBy);
+function sortHamsters(hamsters, sortBy) {
+    shuffle(hamsters);
+    quickSortRecursive(hamsters, 0, hamsters.length - 1, sortBy);
 }
 
-function quickSortRecursive(low, high, sortBy) {
+function quickSortRecursive(hamsters, low, high, sortBy) {
     if (high > low) {
-        var pivotPosition = partition(low, high, sortBy);
-        quickSortRecursive(low, (parseInt(pivotPosition) - 1), sortBy);
-        quickSortRecursive((parseInt(pivotPosition) + 1), high, sortBy);
+        var obj = partition(hamsters, low, high, sortBy);
+        var pivotPosition = obj.pivotPosition;
+        var hamstersArr = obj.hamsters;
+        quickSortRecursive(hamstersArr, low, (parseInt(pivotPosition) - 1), sortBy);
+        quickSortRecursive(hamstersArr, (parseInt(pivotPosition) + 1), high, sortBy);
     }
 }
 
-function partition(low, high, sortBy) {
+function partition(hamsters, low, high, sortBy) {
     var left = low + 1;
     var right = high;
-
-    var pivot = allHamstersArr[low][sortBy];
+    var hamstersArr = hamsters;
+    var pivot = hamstersArr[low][sortBy];
 
     while(left < right) {
-        while(allHamstersArr[left][sortBy] <= pivot && left < high) {
+        while(hamstersArr[left][sortBy] <= pivot && left < high) {
             left++;
         }
 
-        while(allHamstersArr[right][sortBy] >= pivot && right > low) {
+        while(hamstersArr[right][sortBy] >= pivot && right > low) {
             right--;
         }
 
         if(left <= right) {
-            swap(left, right);
+            hamstersArr = swap(hamstersArr, left, right);
         }
     }
-    if (pivot > allHamstersArr[right][sortBy]) {
-        swap(low, right);
+
+    if (pivot > hamstersArr[right][sortBy]) {
+        hamstersArr = swap(hamstersArr, low, right);
     }
-    return right;
+
+    var obj = {
+        pivotPosition: right,
+        hamsters: hamstersArr
+    };
+    
+    return obj;
 }
 
-function swap(firstIndex, secondIndex){
-    var temp = allHamstersArr[firstIndex];
-    allHamstersArr[firstIndex] = allHamstersArr[secondIndex];
-    allHamstersArr[secondIndex] = temp;
+function swap(hamsters, firstIndex, secondIndex){
+    var temp = hamsters[firstIndex];
+    hamsters[firstIndex] = hamsters[secondIndex];
+    hamsters[secondIndex] = temp;
+
+    return hamsters;
 }
 
 /**
