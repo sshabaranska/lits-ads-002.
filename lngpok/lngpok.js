@@ -184,7 +184,7 @@ function writeResult (outFile, totalSum) {
             }
         });
     } else {
-        fs.writeFile('hamstr.out', totalSum, 'utf8', function(err) {
+        fs.writeFile('lngpok.out', totalSum, 'utf8', function(err) {
             if (err) {
                 console.log(err);
             }
