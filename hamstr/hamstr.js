@@ -1,6 +1,8 @@
 var fs = require('fs');
 var path = require('path');
 
+var similar = true;
+
 (function () {
     var files = fs.readdirSync(__dirname);
 
@@ -26,7 +28,7 @@ var path = require('path');
         if(content){
             var tmpContent = content.trim().split(/\n/);
             packages = tmpContent[0].trim();
-            console.log('packages = ' + packages);
+            //console.log('packages = ' + packages);
             allHamstersQty = tmpContent[1].trim();
             allHamstersArr = convertDocToArr(tmpContent, allHamstersQty);
         } else {
@@ -70,7 +72,7 @@ function convertDocToArr(tmpContent, allHamstersQty) {
         };
         arr[i-2] = tmpObj;
     };
-    console.log(arr);
+    //console.log(arr);
     return arr;
 }
 
@@ -122,9 +124,14 @@ function countPackages(hamsters, qty) {
         hamsters[i][qty] = parseInt(hamsters[i].single)
                             + (parseInt(hamsters[i].withNeighbour) * parseInt(qty));
     }
-    var sortedHamsters = sortHamsters(hamsters, qty);
-    console.log('sorted');
-    console.log(sortedHamsters);
+    var sortedHamsters = [];
+    if (!similar) {
+        sortedHamsters = sortHamsters(hamsters, qty);
+    } else {
+        console.log('Im here!')
+        sortedHamsters = hamsters;
+    }
+    
     var currentPackages = 0;
 
     for(var j = 0; j <= qty; j++) {
@@ -193,88 +200,15 @@ function merge(leftPart, rightPart, sortBy) {
 function compare (num1, num2, sortBy) {
     if(!num1) return false;
     if(!num2) return true;
+    if(num1[sortBy] != num2[sortBy]) {
+        similar = false;
+    }
     if(parseFloat(num1[sortBy]) < parseFloat(num2[sortBy])) {
         return true;
     } else {
         return false;
     }
 }
-
-/**
- * function shuffles array of hamsters
- * @ param {Array} hamsters
- * @ return {Array}
- 
-function shuffle(hamsters) {
-
-    for (var i = hamsters.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = hamsters[i];
-        hamsters[i] = hamsters[j];
-        hamsters[j] = temp;
-    }
-}*/
-
-/**
- * function sorts array of hamsters
- * @ param {Array} hamsters
- * @ return {Array}
- 
-
-function sortHamsters(hamsters, sortBy) {
-    shuffle(hamsters);
-    quickSortRecursive(hamsters, 0, hamsters.length - 1, sortBy);
-}
-
-function quickSortRecursive(hamsters, low, high, sortBy) {
-    if (high > low) {
-        var obj = partition(hamsters, low, high, sortBy);
-        var pivotPosition = obj.pivotPosition;
-        var hamstersArr = obj.hamsters;
-        quickSortRecursive(hamstersArr, low, (parseInt(pivotPosition) - 1), sortBy);
-        quickSortRecursive(hamstersArr, (parseInt(pivotPosition) + 1), high, sortBy);
-    }
-}
-
-function partition(hamsters, low, high, sortBy) {
-    var left = low + 1;
-    var right = high;
-    var hamstersArr = hamsters;
-    var pivot = hamstersArr[low][sortBy];
-
-    while(left < right) {
-        while(hamstersArr[left][sortBy] <= pivot && left < high) {
-            left++;
-        }
-
-        while(hamstersArr[right][sortBy] >= pivot && right > low) {
-            right--;
-        }
-
-        if(left <= right) {
-            hamstersArr = swap(hamstersArr, left, right);
-        }
-    }
-
-    if (pivot > hamstersArr[right][sortBy]) {
-        hamstersArr = swap(hamstersArr, low, right);
-    }
-
-    var obj = {
-        pivotPosition: right,
-        hamsters: hamstersArr
-    };
-    
-    return obj;
-}
-
-function swap(hamsters, firstIndex, secondIndex){
-    var temp = hamsters[firstIndex];
-    hamsters[firstIndex] = hamsters[secondIndex];
-    hamsters[secondIndex] = temp;
-
-    return hamsters;
-}*/
 
 /**
  * count total summ
