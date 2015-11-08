@@ -39,9 +39,15 @@ var path = require('path');
     console.log('jockers = ' + jockers);
     var sortedCards = sortCards(cards);
     console.log('sorted = ' + sortedCards);
+
     var unique = selectUnique(sortedCards);
     console.log('unique = ' + unique);
-    result = getLongestSeries(unique, jockers) + jockers;
+    if(unique.length > 1) {
+        result = getLongestSeries(unique, jockers) + jockers;
+    } else{
+        result = unique.length + jockers;
+    } 
+    
     writeResult(outFile, result);
 })();
 
