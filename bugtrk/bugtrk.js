@@ -71,7 +71,7 @@ function countMinLength(qty, width, height) {
 
         if(totalHeight >= totalWidth) {
             result = totalHeight;
-        } else if (qty === newQty){
+        } else if (qty <= newQty){
 
             if (totalHeight > totalWidth) {
                 result = totalHeight;
