@@ -96,7 +96,7 @@ function writeResult (outFile, totalSum) {
             }
         });
     } else {
-        fs.writeFile('bgtrkr.out', totalSum, 'utf8', function(err) {
+        fs.writeFile('bugtrk.out', totalSum, 'utf8', function(err) {
             if (err) {
                 console.log(err);
             }
