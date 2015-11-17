@@ -59,14 +59,14 @@ function isfileExist(file) {
  */
 function countMinLength(qty, width, height) {
     var newQty = 1,
-        totalWidth = width * qty,
-        totalHeight = height,
+        totalWidth = parseInt(width) * parseInt(qty),
+        totalHeight = parseInt(height),
         result;
 
         while (totalHeight < totalWidth && qty > newQty){
             newQty++;
-            totalHeight = height * newQty;
-            totalWidth = width * qty / newQty;
+            totalHeight = parseInt(height) * parseInt(newQty);
+            totalWidth = parseInt(width) * parseInt(qty) / parseInt(newQty);
         }
 
         if(totalHeight >= totalWidth) {
